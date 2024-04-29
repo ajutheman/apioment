@@ -8,10 +8,7 @@ class ApiClient {
   final Dio dio = Dio();
 
   ApiClient() {
-    if (!baseUrl.endsWith("/")) {
-      baseUrl = "$baseUrl/";
-    }
-
+  
     dio.options.baseUrl = baseUrl; // 5 seconds
     // 5 seconds
   }
@@ -36,7 +33,7 @@ class ApiClient {
       print(data);
       print("endpoint");
       print(endpoint);
-      final response = await dio.post(endpoint, data: data);
+      final response = await dio.post(endpoint, queryParameters: data);
       print(ApiClient.baseUrl);
       print("data");
       print(data);
@@ -46,6 +43,7 @@ class ApiClient {
       var result = jsonDecode(response.toString());
       return ApiResponseModel(true, result);
     } catch (e) {
+      print(e);
       return ApiResponseModel(false, e);
     }
   }

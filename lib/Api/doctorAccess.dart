@@ -5,19 +5,14 @@ import 'package:apioment/models/doctorModel.dart';
 Future<List<DoctorModel>> fetchDoctorList() async {
   try {
     ApiClient _client = ApiClient();
-    Map<String, dynamic> parameters = {'clinicid': ApplicationConfig.ClinicId};
-    final response = await _client.get("api/PatientSchedule/GetDoctor",
+    Map<String, dynamic> parameters = {'p_clinicId': ApplicationConfig.ClinicId};
+    final response = await _client.get("/api/PatientSchedule/GetDoctor",
         queryParameters: parameters);
+    if(response.isSuccess)
+    {
+      var result = ResponseData.fromJson(response.result);
 
-    if (response.isSuccess) {
-      List<DoctorModel> resp = [];
-      for (var item in response.result) {
-        resp.add(DoctorModel.fromJson(
-            item)); // Assuming the response is a list of JSON objects
-        print(resp);
-      }
-
-      return resp;
+      return result.result;
     } else {
       // Handle the case when the response is not successful
       throw Exception('Failed to fetch doctor list');

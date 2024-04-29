@@ -66,7 +66,7 @@ class ApplicationBloc extends Bloc<ApplicationEvent, ApplicationState> {
           String password = event.password;
 
           var loginRsult = verifyLogin(
-            clinicId,
+            int.parse(clinicId),
             username,
             password,
           );

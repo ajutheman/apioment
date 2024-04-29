@@ -15,3 +15,27 @@ class DoctorModel {
     );
   }
 }
+
+
+
+
+
+class ResponseData {
+  final List<DoctorModel> result;
+  final int resultType;
+  final String message;
+
+  ResponseData({
+    required this.result,
+    required this.resultType,
+    required this.message,
+  });
+
+  factory ResponseData.fromJson(Map<String, dynamic> json) {
+    return ResponseData(
+      result: List<DoctorModel>.from(json['result'].map((x) => DoctorModel.fromJson(x))),
+      resultType: json['resultType'],
+      message: json['message'],
+    );
+  }
+}

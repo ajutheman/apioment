@@ -3,7 +3,7 @@ import 'package:apioment/applicationConfig.dart';
 import 'package:apioment/models/loginResponse.dart';
 
 Future<LoginResponseModel> verifyLogin(
-  String clinicId,
+  int clinicId,
   String username,
   String password,
 ) async {
@@ -16,19 +16,12 @@ Future<LoginResponseModel> verifyLogin(
       'password': password,
     };
 
-    var response = await client.post("api/Users/Login?", data: parameters);
-    print("response.isSuccess");
-    print(response.isSuccess);
-    print(parameters);
-    print(password);
-    print(ApplicationConfig.ConnectionUrl);
-    if (response.isSuccess) {
-      print("object");
-      print(response.result);
+    var response = await client.post("/api/Users/Login", data: parameters);   
+    if (response.isSuccess) {    
       return LoginResponseModel.fromJson(response.result);
-    } else {
-      // throw Exception('Failed to fetch doctor list');
-      throw Exception(response.result);
+    } else
+    {
+            throw Exception(response.result);
     }
   } catch (e) {
     throw Exception(e.toString());

@@ -11,7 +11,7 @@ Future<List<PatientSchedule>> fetchSchedules(
       'date': date.toString(),
       'EmpDocNo': EmpDocNo
     };
-    final response = await _client.get("api/PatientSchedule/GetPatientSchedule",
+    final response = await _client.get("/api/PatientSchedule/GetPatientSchedule",
         queryParameters: parameters);
 
     if (response.isSuccess) {
