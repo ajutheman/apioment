@@ -16,7 +16,7 @@ class ScheduleCardWidget extends StatelessWidget {
     String formattedEndTime = timeFormat.format(schedule.endTime);
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(top: 0, left: 8, right: 8, bottom: 4),
       child: Container(
         decoration: BoxDecoration(
           gradient: getGradientColor(schedule.type).headerGradient,
@@ -56,7 +56,7 @@ class ScheduleCardWidget extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Divider(height: 10),
+                  Divider(height: 15),
                 ],
               ),
             ),
@@ -73,7 +73,7 @@ class ScheduleCardWidget extends StatelessWidget {
               padding: EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  SizedBox(height: 10),
+                  // SizedBox(height: 10),
                   _buildScheduleDetails(schedule.type, context),
                 ],
               ),
@@ -113,32 +113,43 @@ class ScheduleCardWidget extends StatelessWidget {
                   'MR No: ${schedule.patientMRNumber}',
                 ),
                 MedicoControls.NormalTextCard(
-                  'Name: ${schedule.patientName}',
-                ),
-                MedicoControls.NormalTextCard(
                   ' ',
                 ),
               ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: MedicoControls.NormalNameTextCard(
+                    'Name: ${schedule.patientName}',
+                  ),
+                ),
+                // MedicoControls.NormalTextCard(
+                //   ' ',
+                // ),
+              ],
+            ),
+            const SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 MedicoControls.NormalTextCard(
-                  'Consulted Doctor : ${schedule.consultedDoctorName ?? 'N/A'}',
+                  '${schedule.consultedDoctorName.split('|')[0] == "" ? 'Therapist Name' : 'Doctor Name'}: ${schedule.consultedDoctorName.replaceAll('|', '') ?? 'N/A'}',
                 )
               ],
             ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                MedicoControls.NormalTextCard(
-                  'Treatment Name  :  ${schedule.treatmentName ?? 'N/A'}',
-                )
-              ],
-            ),
-            SizedBox(height: 15),
+            const SizedBox(height: 5),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: <Widget>[
+            //     MedicoControls.NormalTextCard(
+            //       'Treatment Name  :  ${schedule.date ?? 'N/A'}',
+            //     )
+            //   ],
+            // ),
+            // SizedBox(height: 15),
           ],
         );
       case 'Block':

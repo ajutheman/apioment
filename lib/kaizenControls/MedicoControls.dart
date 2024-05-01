@@ -16,6 +16,18 @@ class MedicoControls {
                 OutlineInputBorder(borderRadius: BorderRadius.circular(10.0))));
   }
 
+  static Widget PasswordtextField(
+      TextEditingController controller, String label,
+      {bool isPassword = true}) {
+    return TextFormField(
+        controller: controller,
+        obscureText: isPassword,
+        decoration: InputDecoration(
+            labelText: label,
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(10.0))));
+  }
+
   static Widget VerticalFiller(double height) {
     return Container(
       height: height,
@@ -128,6 +140,22 @@ class MedicoControls {
         color: Medicolor.textcolorWhite,
         fontWeight: FontWeight.bold,
       ),
+    );
+  }
+
+  static Widget NormalNameTextCard(String label) {
+    int maxLines = label.length > 20 ? 2 : 1; // Adjust the threshold as needed
+
+    return Text(
+      label,
+      style: TextStyle(
+        fontSize: 15.0,
+        color: Medicolor.textcolorWhite,
+        fontWeight: FontWeight.bold,
+      ),
+      maxLines: maxLines,
+      overflow:
+          TextOverflow.ellipsis, // This will add ellipsis if text overflows
     );
   }
 
@@ -674,12 +702,14 @@ class DateSelectionButton extends StatelessWidget {
     return Container(
       // color: Medicolor.color1,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(8),
+        // border: Border.all(color: Colors.black),
+        borderRadius: BorderRadius.circular(0),
       ),
       child: ElevatedButton.icon(
         onPressed: onPressed,
         icon: Icon(Icons.calendar_month, color: Medicolor.color4),
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.white)),
         label: Text(
           DateFormat('yyyy-MM-dd').format(selectedDate),
           style: TextStyle(color: Medicolor.color4),
@@ -857,7 +887,7 @@ class StatusChips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(left: 4, right: 4, top: 4),
       child: Container(
         height: 60,
         child: Row(

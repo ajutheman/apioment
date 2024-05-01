@@ -11,7 +11,7 @@ class QRCodeErrorState extends ApplicationState {}
 
 class LoginPageState extends ApplicationState {}
 
-class LoggedInState extends ApplicationState {}
+
 
 class LoginRequestingState extends ApplicationState {}
 

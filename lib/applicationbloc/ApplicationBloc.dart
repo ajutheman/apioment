@@ -1,6 +1,8 @@
 // ignore: depend_on_referenced_packages
 // ignore_for_file: invalid_use_of_visible_for_testing_member
 
+import 'dart:async';
+
 import 'package:apioment/Api/doctorAccess.dart';
 import 'package:apioment/Api/loginAccess.dart';
 import 'package:apioment/Api/scheduleAccess.dart';
@@ -17,7 +19,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ApplicationBloc extends Bloc<ApplicationEvent, ApplicationState> {
   ApplicationBloc() : super(ApplicationInitialState()) {
-    List<DoctorModel> doctorsInBloc = [];
     List<PatientSchedule> schedulesInBloc = [];
     LoginResponseModel loginResp;
 
@@ -31,7 +32,7 @@ class ApplicationBloc extends Bloc<ApplicationEvent, ApplicationState> {
         emit(NoInternetState());
       } else {
         //configuration Checking
-        ReadConfiguration().then((result) {
+        ReadConfiguration().then((result) async {
           if (result == false) {
             emit(QRCodeState());
           } else {
@@ -43,8 +44,12 @@ class ApplicationBloc extends Bloc<ApplicationEvent, ApplicationState> {
             } else if (ApplicationConfig.configStatus ==
                 ConfigStatus.loggedIn) {
               ResultData result = ResultData.waiting;
-              result = refreshSheduler(doctorsInBloc, selectedDate,
-                  ApplicationConfig.DefaultDoctor, schedulesnIBloc, result);
+              result = await refreshScheduler(
+                  // doctorsInBloc,
+                  selectedDate,
+                  ApplicationConfig.DefaultDoctor,
+                  // schedulesnIBloc,
+                  result);
               if (result == ResultData.Success) {
                 emit(ShedulerViewState(doctorsInBloc, schedulesnIBloc,
                     selectedDate, ApplicationConfig.DefaultDoctor));
@@ -59,47 +64,90 @@ class ApplicationBloc extends Bloc<ApplicationEvent, ApplicationState> {
           emit(QRCodeState());
         });
 
-        on<LoginButtonPressed>((event, emit) {
-          emit(LoginRequestingState());
+        on<SearchEvent>((event, emit) {
+          // emit(ShedulerViewState(
+          //     doctorsInBloc, schedulesnIBloc, selectedDate, doctorID
+          //     // doctorID,
+          //     ));
+        });
+        on<LogoutEvent>((event, emit) async {
+          // Perform logout actions here, such as clearing user session data
+          // For example:
+          // await clearUserSessionData();
+
+          // Emit a state indicating that the user is logged out
+          emit(LoginPageState());
+        });
+
+        on<LoginButtonPressed>((event, emit) async {
+          // emit(LoginRequestingState());
+
           String clinicId = ApplicationConfig.ClinicId;
           String username = event.userName;
           String password = event.password;
 
-          var loginRsult = verifyLogin(
-            int.parse(clinicId),
-            username,
-            password,
-          );
+          try {
+            var loginResult = await verifyLogin(
+              int.parse(clinicId),
+              username,
+              password,
+            );
 
-          ResultData result = ResultData.waiting;
-          loginRsult.then((loginResponse) {
-            if (loginResponse.resultType == 0) {
-              loginResp = loginResponse;
-              selectedDate = DateTime.now();
+            if (loginResult.resultType == 0) {
+              loginResp = loginResult;
+              selectedDate = DateTime(2024, 04, 27);
               doctorID = loginResp.userEmpDocNo;
               saveToLocal("defaultDoctor", doctorID);
-              result = refreshSheduler(doctorsInBloc, selectedDate, doctorID,
-                  schedulesnIBloc, result);
+
+              ResultData result = ResultData.waiting;
+              result = await refreshScheduler(
+                // doctorsInBloc,
+                selectedDate,
+                doctorID,
+                // schedulesnIBloc,
+                result,
+              );
+
               if (result == ResultData.Success) {
                 emit(ShedulerViewState(
-                    doctorsInBloc, schedulesnIBloc, selectedDate, doctorID));
+                  doctorsInBloc,
+                  schedulesnIBloc,
+                  selectedDate,
+                  doctorID,
+                ));
+              } else {
+                // Handle failure scenarios
               }
             } else {
-              result = ResultData.Errors;
+              emit(LoginErrorState(loginResult.message));
             }
-          });
-
-          //emit(QRCodeState());
+          } catch (e) {
+            // Handle exceptions
+          }
         });
 
         on<SearchScheduleEvent>((event, emit) async {
           {
             ResultData result = ResultData.waiting;
-            result = refreshSheduler(doctorsInBloc, event.searchDate,
-                event.employeeDocNo, schedulesnIBloc, result);
+            doctorID = event.employeeDocNo;
+            selectedDate = event.searchDate;
+            result = await refreshScheduler(
+              // doctorsInBloc,
+              event.searchDate,
+              event.employeeDocNo,
+              // schedulesnIBloc,
+              result,
+            );
+
             if (result == ResultData.Success) {
-              emit(ShedulerViewState(doctorsInBloc, schedulesnIBloc,
-                  event.searchDate, event.employeeDocNo));
+              emit(ShedulerViewState(
+                doctorsInBloc,
+                schedulesnIBloc,
+                event.searchDate,
+                event.employeeDocNo,
+              ));
+            } else {
+              // Handle failure scenarios
             }
           }
         });
@@ -128,32 +176,33 @@ class ApplicationBloc extends Bloc<ApplicationEvent, ApplicationState> {
     });
   }
 
-  List<PatientSchedule> get schedulesnIBloc => [];
+  static List<PatientSchedule> schedulesnIBloc = [];
+  static List<DoctorModel> doctorsInBloc = [];
 
-  ResultData refreshSheduler(
-      List<DoctorModel> doctorsInBloc,
+  Future<ResultData> refreshScheduler(
+      // List<DoctorModel> doctorsInBloc,
       DateTime selectedDate,
       String doctorID,
-      List<PatientSchedule> schedulesInBloc,
-      ResultData result) {
-    var doctor = fetchDoctorList();
-    doctor.then((futureDoctors) {
+      // List<PatientSchedule> schedulesInBloc,
+      ResultData result) async {
+    try {
+      var futureDoctors = await fetchDoctorList();
       if (futureDoctors.isNotEmpty) {
         doctorsInBloc = futureDoctors;
-        var shedules = fetchSchedules(selectedDate, doctorID);
-        shedules.then((futureSchedules) {
-          if (futureSchedules.isNotEmpty) {
-            schedulesInBloc = futureSchedules;
-            result = ResultData.Success;
-          } else {
-            result = ResultData.NoSchedules;
-          }
-        });
+        var futureSchedules = await fetchSchedules(selectedDate, doctorID);
+        if (futureSchedules.isNotEmpty) {
+          schedulesnIBloc = futureSchedules;
+          return ResultData.Success;
+        } else {
+          return ResultData.NoSchedules;
+        }
       } else {
-        result = ResultData.NoDoctors;
+        return ResultData.NoDoctors;
       }
-    });
-    return result;
+    } catch (e) {
+      // Handle any exceptions that might occur during fetching
+      throw "erro";
+    }
   }
 
   Future<bool> ReadConfiguration() async {

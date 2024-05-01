@@ -16,10 +16,6 @@ class DoctorModel {
   }
 }
 
-
-
-
-
 class ResponseData {
   final List<DoctorModel> result;
   final int resultType;
@@ -33,7 +29,8 @@ class ResponseData {
 
   factory ResponseData.fromJson(Map<String, dynamic> json) {
     return ResponseData(
-      result: List<DoctorModel>.from(json['result'].map((x) => DoctorModel.fromJson(x))),
+      result: List<DoctorModel>.from(
+          json['result'].map((x) => DoctorModel.fromJson(x))),
       resultType: json['resultType'],
       message: json['message'],
     );

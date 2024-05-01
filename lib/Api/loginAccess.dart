@@ -16,12 +16,19 @@ Future<LoginResponseModel> verifyLogin(
       'password': password,
     };
 
-    var response = await client.post("/api/Users/Login", data: parameters);   
-    if (response.isSuccess) {    
+    var response = await client.post("/api/Users/Login", data: parameters);
+    if (response.isSuccess) {
       return LoginResponseModel.fromJson(response.result);
-    } else
-    {
-            throw Exception(response.result);
+    } else {
+      LoginResponseModel resp = LoginResponseModel(
+          resultType: 4,
+          message: 'invaild login',
+          id: -1,
+          clinicId: -1,
+          username: '',
+          userEmpDocNo: '',
+          fullAccess: false);
+      return resp;
     }
   } catch (e) {
     throw Exception(e.toString());

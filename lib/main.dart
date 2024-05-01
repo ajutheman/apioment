@@ -1,5 +1,6 @@
 import 'package:apioment/applicationbloc/ApplicationBloc.dart';
 import 'package:apioment/applicationbloc/ApplicationState.dart';
+import 'package:apioment/screens/AppointmentView.dart';
 import 'package:apioment/screens/NoInternetPage.dart';
 import 'package:apioment/screens/connectionPageQR.dart';
 import 'package:apioment/screens/loginPage.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(),
       home: BlocProvider(
         create: (context) => ApplicationBloc(),
@@ -42,18 +44,28 @@ class App extends StatelessWidget {
           return MedicoplusErrorPage(context, state);
         } else if (state is NoInternetState) {
           return NoInternetPage();
-        } else if (state is LoginPageState) {
-          return Loginpage(context);
-        } else if (state is LoggedInState) {
+        }
+        // else if (state is LoginPageState)
+        // {
+        //   return Loginpage(context);
+        // }
+        else if (state is LoginPageState) {
           // print("object");
-          return Loginpage(context);
+          return Loginpage(context, "");
+          // appointmentView(context, state);
+          // test();
+          // ConnectionPage(context);
+        } else if (state is LoginErrorState) {
+          // print("object");
+          return Loginpage(context, state.errorMessage);
           // appointmentView(context, state);
           // test();
           // ConnectionPage(context);
         } else if (state is ShedulerViewState) {
-          return Center(child: CircularProgressIndicator());
-          // AppointmentView(
-          //     state.Shedules, state.doctors, context, state.EmpDocNo);
+          return
+              // Center(child: CircularProgressIndicator());
+              AppointmentView(state.Shedules, state.doctors, context,
+                  state.EmpDocNo, state.SelectedDate);
         } else {
           return const Scaffold(body: LoadingIndicator()
               //   Center(

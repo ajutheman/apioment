@@ -7,6 +7,8 @@ class QRCodeScannedEvent extends ApplicationEvent {
 
 class RequestQRScanEvent extends ApplicationEvent {}
 
+class SearchEvent extends ApplicationEvent {}
+
 class LoginButtonPressed extends ApplicationEvent {
   final String ClinicId;
   final String userName;
@@ -18,6 +20,8 @@ class LoginButtonPressed extends ApplicationEvent {
     this.password,
   );
 }
+
+class LogoutEvent extends ApplicationEvent {}
 
 class SearchScheduleEvent extends ApplicationEvent {
   final DateTime searchDate;

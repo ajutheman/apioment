@@ -8,14 +8,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Loginpage extends StatelessWidget {
   BuildContext applicationContext;
-  Loginpage(this.applicationContext, {super.key});
+  final String errorMessage;
+  Loginpage(this.applicationContext, this.errorMessage, {super.key});
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-    final TextEditingController userIdController =
-        TextEditingController(text: "sreenath");
-    final TextEditingController passwordController =
-        TextEditingController(text: "123");
+    final TextEditingController userIdController = TextEditingController(
+        // text: "sreenath"
+        );
+    final TextEditingController passwordController = TextEditingController(
+        // text: "123"
+        );
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -40,7 +44,7 @@ class Loginpage extends StatelessWidget {
               const SizedBox(height: 16),
               MedicoControls.NormalLablel("Password"),
               const SizedBox(height: 23),
-              MedicoControls.textField(
+              MedicoControls.PasswordtextField(
                   passwordController, 'Enter your Password'),
               const SizedBox(height: 32),
               Center(
@@ -73,6 +77,29 @@ class Loginpage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 15),
+
+              errorMessage.isNotEmpty
+                  ? Container(
+                      padding: EdgeInsets.only(top: 10, bottom: 10),
+                      color: Colors.red,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.error_outline, color: Colors.white),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                errorMessage,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : SizedBox(),
+
               // Add your additional UI components here if needed
             ],
           ),

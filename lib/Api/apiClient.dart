@@ -8,7 +8,6 @@ class ApiClient {
   final Dio dio = Dio();
 
   ApiClient() {
-  
     dio.options.baseUrl = baseUrl; // 5 seconds
     // 5 seconds
   }
@@ -18,6 +17,7 @@ class ApiClient {
     try {
       final response =
           await dio.get(endpoint, queryParameters: queryParameters);
+
       var result = jsonDecode(response.toString());
       return ApiResponseModel(true, result);
     } catch (e) {
@@ -28,17 +28,17 @@ class ApiClient {
   Future<ApiResponseModel> post(String endpoint,
       {Map<String, dynamic>? data}) async {
     try {
-      print(ApiClient.baseUrl);
-      print("data");
-      print(data);
-      print("endpoint");
-      print(endpoint);
+      // print(ApiClient.baseUrl);
+      // print("data");
+      // print(data);
+      // print("endpoint");
+      // print(endpoint);
       final response = await dio.post(endpoint, queryParameters: data);
-      print(ApiClient.baseUrl);
-      print("data");
-      print(data);
-      print("endpoint");
-      print(endpoint);
+      // print(ApiClient.baseUrl);
+      // print("data");
+      // print(data);
+      // print("endpoint");
+      // print(endpoint);
 
       var result = jsonDecode(response.toString());
       return ApiResponseModel(true, result);

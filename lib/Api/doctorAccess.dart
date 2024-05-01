@@ -5,11 +5,12 @@ import 'package:apioment/models/doctorModel.dart';
 Future<List<DoctorModel>> fetchDoctorList() async {
   try {
     ApiClient _client = ApiClient();
-    Map<String, dynamic> parameters = {'p_clinicId': ApplicationConfig.ClinicId};
+    Map<String, dynamic> parameters = {
+      'p_clinicId': ApplicationConfig.ClinicId
+    };
     final response = await _client.get("/api/PatientSchedule/GetDoctor",
         queryParameters: parameters);
-    if(response.isSuccess)
-    {
+    if (response.isSuccess) {
       var result = ResponseData.fromJson(response.result);
 
       return result.result;
@@ -19,7 +20,7 @@ Future<List<DoctorModel>> fetchDoctorList() async {
     }
   } catch (e) {
     // Handle any exceptions that occur during the API call
-    print(ApplicationConfig.ClinicId);
+    // print(ApplicationConfig.ClinicId);
     throw Exception(e.toString());
   }
 }

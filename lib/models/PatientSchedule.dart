@@ -8,6 +8,8 @@ class PatientSchedule {
   final String treatmentName;
   final String type;
   final String? blockReason;
+  final int? id;
+  final int? clinicId;
 
   PatientSchedule({
     required this.date,
@@ -19,23 +21,23 @@ class PatientSchedule {
     required this.treatmentName,
     required this.type,
     this.blockReason,
-    required id,
-    required clinicId,
+    this.id,
+    this.clinicId,
   });
 
   factory PatientSchedule.fromJson(Map<String, dynamic> json) {
     return PatientSchedule(
-      date: json['date'],
-      patientMRNumber: json['patientMRNumber'],
-      patientName: json['patientName'],
-      startTime: json['startTime'],
-      endTime: json['endTime'],
-      consultedDoctorName: json['consultedDoctorName'],
-      treatmentName: json['treatmentName'],
-      type: json['type'],
+      date: DateTime.parse(json['appDate'] ?? ''),
+      patientMRNumber: json['patientDocNo'] ?? '',
+      patientName: json['patientName'] ?? '',
+      startTime: DateTime.parse(json['startTime'] ?? ''),
+      endTime: DateTime.parse(json['endTime'] ?? ''),
+      consultedDoctorName: json['consultedDoctorName'] ?? '',
+      treatmentName: json['treatmentName'] ?? '',
+      type: json['apptype'] ?? '',
       blockReason: json['blockReason'],
-      id: null,
-      clinicId: null,
+      id: json['id'],
+      clinicId: json['clinicId'],
     );
   }
 }
